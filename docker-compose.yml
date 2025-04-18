@@ -1,0 +1,85 @@
+
+services:
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - customer-services
+      - menu-services
+      - inventory-services
+      - order-services
+      - payment-services
+    environment:
+      - NODE_ENV=development
+  customer-services:
+    build:
+      context: ./customer-services
+      dockerfile: Dockerfile
+    ports:
+      - "3005:3005"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://localhost:27017/cafe
+
+  menu-services:
+    build:
+      context: ./menu-services
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://localhost:27017/cafe
+
+
+  inventory-services:
+    build:
+      context: ./inventory-services
+      dockerfile: Dockerfile
+    ports:
+      - "3004:3004"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://localhost:27017/cafe
+
+  order-services:
+    build:
+      context: ./order-services
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://localhost:27017/cafe
+
+  payment-services:
+    build:
+      context: ./payment-services
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://localhost:27017/cafe
+  
+
+
+  mongodb:
+    image: mongo:6
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
